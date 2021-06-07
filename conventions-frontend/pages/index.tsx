@@ -1,10 +1,10 @@
 
 import { useState } from "react";
-import { Convention } from "./api/mock";
 import styles from "../styles/Conventions.module.css";
 import { useRouter } from "next/router";
 import RegisterEvent from "../components/RegisterEvent";
 import { useAuth0 } from "@auth0/auth0-react";
+import { Convention } from "./api/models";
 
 
 export default function Conventions({

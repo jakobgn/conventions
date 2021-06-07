@@ -1,17 +1,14 @@
-import { useState, useEffect } from "react";
-import { IdToken, useAuth0 } from "@auth0/auth0-react";
-import { Convention } from "../pages/api/mock";
-
+import { useAuth0 } from "@auth0/auth0-react";
 const ROLE_CLAIM =
   "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
 
-export default function RegisterEvent({onAddConvention} : {onAddConvention: Function}) {
-  const {
-    user,
-    isAuthenticated,
-    isLoading,
-    getAccessTokenSilently,
-  } = useAuth0();
+export default function RegisterEvent({
+  onAddConvention,
+}: {
+  onAddConvention: Function;
+}) {
+  const { user, getAccessTokenSilently } =
+    useAuth0();
 
   const registerTalkApi = async () => {
     try {
@@ -30,8 +27,7 @@ export default function RegisterEvent({onAddConvention} : {onAddConvention: Func
           body: JSON.stringify({}),
         })
       ).json();
-      onAddConvention(response)
-
+      onAddConvention(response);
     } catch (error) {
       //handle
     }

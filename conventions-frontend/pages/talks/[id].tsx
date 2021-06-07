@@ -1,7 +1,7 @@
-import { talks, Talk, Convention } from "../api/mock";
 import styles from "../../styles/Talks.module.css";
 import { useRouter } from "next/router";
 import ReserveSeat from "../../components/ReserveSeat";
+import { Convention, Talk } from "../api/models";
 export default function Talks({ talks }: { talks: Array<Talk> }) {
   const router = useRouter();
   const { id } = router.query;
@@ -15,7 +15,7 @@ export default function Talks({ talks }: { talks: Array<Talk> }) {
             by <strong>{talk.speaker}</strong>
           </p>
           <p>{talk.description}</p>
-          <ReserveSeat conventionId={Number(id)} talkId={talk.id}></ReserveSeat>
+          <ReserveSeat conventionId={Number(id)} talk={talk}></ReserveSeat>
         </div>
       ))}
     </div>
