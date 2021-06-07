@@ -12,8 +12,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     <Auth0Provider
       domain="jakobgn.eu.auth0.com"
       clientId="xdZgNgzK8AYRxO3gDIRT7sPkWhYLWmpZ"
-      audience="http://localhost:5000"
+      audience="conventions"
       redirectUri={origin}
+      scope="read:current_user"
     >
       <Layout>
         <Component {...pageProps} />
