@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ConventionsAPI.Auth;
+using Core.Interfaces;
+using Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 namespace ConventionsAPI
@@ -42,10 +44,12 @@ namespace ConventionsAPI
             }));
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Admin", policy => policy.Requirements.Add(new HasRoleRequirement("Admin")));
-                options.AddPolicy("Speaker", policy => policy.Requirements.Add(new HasRoleRequirement("Speaker")));
+                options.AddPolicy(SystemRoles.Admin, policy => policy.Requirements.Add(new HasRoleRequirement(SystemRoles.Admin)));
+                options.AddPolicy(SystemRoles.Speaker, policy => policy.Requirements.Add(new HasRoleRequirement(SystemRoles.Speaker)));
             });
             services.AddSingleton<IAuthorizationHandler, HasRoleHandler>();
+            services.AddSingleton<IConventionsRepository, MockConventionsRepository>();
+            services.AddSingleton<ITalksRepository, MockTalksRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

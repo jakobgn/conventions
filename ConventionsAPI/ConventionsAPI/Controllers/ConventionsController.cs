@@ -4,6 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ConventionsAPI.Auth;
+using Core.Interfaces;
+using Core.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ConventionsAPI.Controllers
@@ -13,55 +16,43 @@ namespace ConventionsAPI.Controllers
     [Route("[controller]")]
     public class ConventionsController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Copenhagen", "London"
-        };
+        private readonly IConventionsRepository _conventionsRepository;
 
-        private readonly ILogger<ConventionsController> _logger;
-
-        public ConventionsController(ILogger<ConventionsController> logger)
+        public ConventionsController(IConventionsRepository conventionsRepository)
         {
-            _logger = logger;
+            _conventionsRepository = conventionsRepository;
         }
+
         [AllowAnonymous]
         [HttpGet]
         public ActionResult<IEnumerable<Convention>> Get()
         {
-            return Ok(Enumerable.Range(0, 2).Select(index => new Convention
-            {
-                Date = DateTime.Now.AddDays(index),
-                Id = index + 1,
-                Location = Summaries[index]
-            })
-            .ToArray());
+            var conventions = _conventionsRepository.List();
+            return Ok(conventions);
         }
 
-        [Authorize("Admin")]
+        [Authorize(SystemRoles.Admin)]
         [HttpPost]
-        public ActionResult<Convention> Create()
+        public ActionResult<Convention> Create(Convention item)
         {
-            var result = new Convention()
-            {
-                Date = DateTime.Now,
-                Id = 3,
-                Location = "Paris"
-            };
-            return Ok(result);
+            var created = _conventionsRepository.Create(item);
+            return Ok(created);
         }
 
-        [Authorize("Admin")]
+        [Authorize(SystemRoles.Admin)]
         [HttpPut]
-        public ActionResult Update(int conventionId)
+        public ActionResult Update(Convention item)
         {
+            _conventionsRepository.Update(item);
             return Ok();
         }
 
-        [Authorize("Admin")]
+        [Authorize(SystemRoles.Admin)]
         [HttpDelete]
-        public ActionResult Delete(int conventionId)
+        public ActionResult Delete(Convention item)
         {
-            return Ok(conventionId);
+            _conventionsRepository.Delete(item);
+            return Ok();
         }
     }
 }
