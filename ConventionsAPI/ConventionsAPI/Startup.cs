@@ -23,12 +23,13 @@ namespace ConventionsAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string authority = $"https://{Configuration["Auth0:Domain"]}/";
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.Authority = "https://jakobgn.eu.auth0.com/";
-                    options.Audience = "conventions";
+                    options.Authority = authority;
+                    options.Audience = Configuration["Auth0:Audience"];
                     options.RequireHttpsMetadata = false;
                 });
             services.AddControllers();
