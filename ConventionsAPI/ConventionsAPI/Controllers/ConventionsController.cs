@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ConventionsAPI.Controllers
 {
-    [AllowAnonymous]
+   
     [ApiController]
     [Route("[controller]")]
     public class ConventionsController : ControllerBase
@@ -24,17 +24,44 @@ namespace ConventionsAPI.Controllers
         {
             _logger = logger;
         }
-
+        [AllowAnonymous]
         [HttpGet]
-        public IEnumerable<Convention> Get()
+        public ActionResult<IEnumerable<Convention>> Get()
         {
-            return Enumerable.Range(0, 2).Select(index => new Convention
+            return Ok(Enumerable.Range(0, 2).Select(index => new Convention
             {
                 Date = DateTime.Now.AddDays(index),
                 Id = index + 1,
                 Location = Summaries[index]
             })
-            .ToArray();
+            .ToArray());
+        }
+
+        [Authorize("Admin")]
+        [HttpPost]
+        public ActionResult<Convention> Create()
+        {
+            var result = new Convention()
+            {
+                Date = DateTime.Now,
+                Id = 3,
+                Location = "Paris"
+            };
+            return Ok(result);
+        }
+
+        [Authorize("Admin")]
+        [HttpPut]
+        public ActionResult Update(int conventionId)
+        {
+            return Ok();
+        }
+
+        [Authorize("Admin")]
+        [HttpDelete]
+        public ActionResult Delete(int conventionId)
+        {
+            return Ok(conventionId);
         }
     }
 }

@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ConventionsAPI.Controllers
 {
-    [AllowAnonymous]
     [ApiController]
     [Route("Conventions/{conventionId}/[controller]")]
     public class TalksController : ControllerBase
@@ -19,13 +18,13 @@ namespace ConventionsAPI.Controllers
         {
             _logger = logger;
         }
-
+        [AllowAnonymous]
         [HttpGet]
-        public IEnumerable<Talk> Get(int conventionId)
+        public ActionResult<IEnumerable<Talk>> Get(int conventionId)
         {
             if (conventionId == 1)
             {
-                return new List<Talk>()
+                return Ok(new List<Talk>()
                 {
                     new Talk()
                     {
@@ -35,9 +34,10 @@ namespace ConventionsAPI.Controllers
                         Description =
                             "React 16 was released several months ago. Even though this update was largely API-compatible, the rewritten internal engine included new long-requested features and opened the door for exciting future possibilities."
                     }
-                };
+                });
             }
-            return new List<Talk>()
+
+            return Ok(new List<Talk>()
             {
                 new Talk()
                 {
@@ -55,7 +55,20 @@ namespace ConventionsAPI.Controllers
                     Description =
                         "In Simon Brown's talk at AOTB 2019 he explores the visual communication of software architecture based upon a decade of Simon’s experiences working with software development teams large and small across the globe."
                 }
-            };
+            });
+        }
+        [Authorize("Speaker")]
+        [HttpPost]
+        public ActionResult Create(int conventionId)
+        {
+            return Ok(conventionId);
+        }
+
+        [Authorize]
+        [HttpPost("{talkId}/reserve")]
+        public ActionResult Reserve()
+        {
+            return Ok();
         }
     }
 }
