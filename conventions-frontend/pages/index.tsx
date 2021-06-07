@@ -22,7 +22,7 @@ export default function Conventions({
         >
           <h2 className={styles.title}>{convention.location}</h2>
           <p>
-            Date: <strong>{convention.date}</strong>
+            Date: <strong>{new Date(convention.date).toLocaleDateString()}</strong>
           </p>
         </div>
       ))}
@@ -31,7 +31,10 @@ export default function Conventions({
 }
 
 export async function getStaticProps() {
+  const serverUrl = process.env.REACT_APP_SERVER_URL;
+  const response = await (await fetch(`${serverUrl}/conventions`)).json();
+  console.log(response)
   return {
-    props: { conventions },
+    props: { conventions:response },
   };
 }

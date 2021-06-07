@@ -1,4 +1,4 @@
-import { talks, Talk } from "../api/mock";
+import { talks, Talk, Convention } from "../api/mock";
 import styles from "../../styles/Talks.module.css";
 import { useRouter } from "next/router";
 
@@ -20,14 +20,23 @@ export default function Talks({ talks }: { talks: Array<Talk> }) {
 }
 
 export async function getStaticProps({ params }: { params: { id: number } }) {
-  console.log(params.id);
+  const serverUrl = process.env.REACT_APP_SERVER_URL;
+  const response = await (
+    await fetch(`${serverUrl}/conventions/${params.id}/talks`)
+  ).json();
+  console.log(response);
   return {
-    props: { talks },
+    props: { talks: response },
   };
 }
 export async function getStaticPaths() {
+  const serverUrl = process.env.REACT_APP_SERVER_URL;
+  const response = await (await fetch(`${serverUrl}/conventions`)).json();
+  console.log("RES", response);
   return {
-    paths: [{ params: { id: "1" } }, { params: { id: "2" } }],
+    paths: response.map((x: Convention) => ({
+      params: { id: x.id.toString() },
+    })),
     fallback: true,
   };
 }
